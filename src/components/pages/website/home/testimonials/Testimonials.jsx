@@ -1,5 +1,5 @@
 import React from "react";
-import CardsTestimony from "../../../partials/CardsTestimony";
+import CardsTestimony from "../../../../partials/CardsTestimony";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 
 const Testimonials = () => {
@@ -22,16 +22,36 @@ const Testimonials = () => {
               >
                 {/* Testimonial 1 */}
                 <CardsTestimony
-                    image={"./images/testimonials-1.webp"} alt={"Sarah Johnson"} testimony={"The team delivered our project ahead of schedule with exceptional quality. Our online sales increased by 120% within three months!"} name={"Sarah Johnson"} position={"Marketing Director"}/>
-                
+                  image={"./images/testimonials-1.webp"}
+                  alt={"Sarah Johnson"}
+                  testimony={
+                    "The team delivered our project ahead of schedule with exceptional quality. Our online sales increased by 120% within three months!"
+                  }
+                  name={"Sarah Johnson"}
+                  position={"Marketing Director"}
+                />
+
                 {/* Testimonial 2 */}
                 <CardsTestimony
-                    image={"./images/testimonials-2.webp"} alt={"Michael Chen"} testimony={"From design to deployment, their attention to detail was impressive. They became true partners in our digital transformation journey."} name={"Michael Chen"} position={"CEO, StartupHub"}/>
-                
+                  image={"./images/testimonials-2.webp"}
+                  alt={"Michael Chen"}
+                  testimony={
+                    "From design to deployment, their attention to detail was impressive. They became true partners in our digital transformation journey."
+                  }
+                  name={"Michael Chen"}
+                  position={"CEO, StartupHub"}
+                />
+
                 {/* Testimonial 3 */}
                 <CardsTestimony
-                    image={"./images/testimonials-3.webp"} alt={"Emma Rodriguez"} testimony={"Their SEO strategy tripled our organic traffic in 6 months. We've seen a dramatic improvement in lead quality and conversion rates."} name={"Emma Rodriguez"} position={"CMO, GrowthSolutions"}/>
-    
+                  image={"./images/testimonials-3.webp"}
+                  alt={"Emma Rodriguez"}
+                  testimony={
+                    "Their SEO strategy tripled our organic traffic in 6 months. We've seen a dramatic improvement in lead quality and conversion rates."
+                  }
+                  name={"Emma Rodriguez"}
+                  position={"CMO, GrowthSolutions"}
+                />
               </div>
             </div>
 
@@ -55,9 +75,15 @@ const Testimonials = () => {
 
             {/* Dots Indicator */}
             <div className="flex justify-center mt-6 space-x-2">
-                {[0, 1, 2].map((index) => (
-                    <button key={index} onClick={() => setCurrentSlide(index)} className={`w-3 h-3 rounded-full ${currentSlide === index ? "bg-blue-600" : "bg-gray-300"}`}/>
-                ))}
+              {[0, 1, 2].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-3 h-3 rounded-full ${
+                    currentSlide === index ? "bg-blue-600" : "bg-gray-300"
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </div>
