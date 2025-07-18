@@ -55,7 +55,7 @@ const Testimonials = () => {
               </div>
             </div>
 
-            {/* Navigation Arrows */}
+           {/* Navigation Arrows */}
             <button
               onClick={() =>
                 setCurrentSlide((prev) => (prev == 0 ? 2 : prev - 1))

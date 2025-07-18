@@ -10,14 +10,17 @@ import Contact from "./contact/Contact";
 const Home = () => {
   return (
     <>
-      <Header />
-      <Hero />
-      <Services />
-      <About />
-      <Testimonials />
-      <Contact />
-
-      <Footer />
+      <div className="page-container">
+        <div className="content-wrap">
+          <Header />
+          <Hero />
+          <Services />
+          <About />
+          <Testimonials />
+          <Contact />
+        </div>
+        <Footer />
+      </div>
     </>
   );
 };
