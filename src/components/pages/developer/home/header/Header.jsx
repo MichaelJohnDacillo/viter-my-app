@@ -1,7 +1,13 @@
 import { useState } from "react";
+import { PiNotePencilFill } from "react-icons/pi";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPenOpen, setIsPenOpen] = useState(false);
+
+  const handleAdd = () => {
+    setIsModalServices(true);
+  };
 
   return (
     <header id="header" className="bg-white relative shadow-md w-full">
@@ -27,6 +33,13 @@ const Header = () => {
             Contact
           </a>
         </nav>
+        <button
+          className="hidden md:flex text-primary"
+          type="button"
+          onClick={handleAdd}
+        >
+          <PiNotePencilFill className="size-8" />
+        </button>
 
         {/* Mobile Menu Button */}
         <button
@@ -68,16 +81,32 @@ const Header = () => {
       {/* Mobile Menu (now positioned absolutely) */}
       {isMenuOpen && (
         <div className="md:hidden bg-white absolute top-full left-0 right-0 shadow-lg px-4 py-2 space-y-2 border-t border-gray-200">
-          <a onClick={() => setIsMenuOpen(false)} href="#" className="block py-2 hover:text-blue-500">
+          <a
+            onClick={() => setIsMenuOpen(false)}
+            href="#"
+            className="block py-2 hover:text-blue-500"
+          >
             Home
           </a>
-          <a onClick={() => setIsMenuOpen(false)} href="#about" className="block py-2 hover:text-blue-500">
+          <a
+            onClick={() => setIsMenuOpen(false)}
+            href="#about"
+            className="block py-2 hover:text-blue-500"
+          >
             About
           </a>
-          <a onClick={() => setIsMenuOpen(false)} href="#services" className="block py-2 hover:text-blue-500">
+          <a
+            onClick={() => setIsMenuOpen(false)}
+            href="#services"
+            className="block py-2 hover:text-blue-500"
+          >
             Services
           </a>
-          <a onClick={() => setIsMenuOpen(false)} href="#contact" className="block py-2 hover:text-blue-500">
+          <a
+            onClick={() => setIsMenuOpen(false)}
+            href="#contact"
+            className="block py-2 hover:text-blue-500"
+          >
             Contact
           </a>
         </div>

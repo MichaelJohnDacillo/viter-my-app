@@ -1,5 +1,4 @@
 <?php
-
 require 'Database.php';
 require 'Response.php';
 
@@ -14,7 +13,7 @@ function checkDatabaseConnection()
         $data['success'] = true;
         $data['data'] = [];
         $data['count'] = 0;
-        $data['type'] = 'invalid_request-error';
+        $data['type'] = 'invalid_request_error';
         $data['error'] = "Database Connection Failed.";
         $response->setData($data);
         $response->send();
@@ -35,6 +34,7 @@ function returnError($msg)
     exit;
 }
 
+
 function getResultData($query)
 {
     $data = $query->fetchAll();
@@ -48,7 +48,7 @@ function getQueriedData($query)
     $data['success'] = true;
     $data['data'] = getResultData($query);
     $data['count'] = $query->rowCount();
-    $data['dateNow'] = date('Y-m-d');
+    $data['message'] = date('Y-m-d');
     $response->setData($data);
     $response->send();
     exit;
@@ -57,20 +57,84 @@ function getQueriedData($query)
 function checkQuery($query, $msg)
 {
     // IF QUERY IS FALSE THEN DO THIS CODE
-    // ! = FALSE
+    // ! = FALSE EXAMPLE IS !$IsQuery == FALSE
     if (!$query) {
         $response = new Response();
         $data = [];
         $data['success'] = false;
         $data['error'] = $msg;
         $data['count'] = 0;
-        $data['type'] = "invalid_request-error";
-        $data['dateNow'] = date('Y-m-d');
+        $data['type'] = 'invalid_request_error';
+        $data['message'] = date('Y-m-d');
         $response->setData($data);
         $response->send();
         exit;
     }
 }
+
+function checkEndpoint()
+{
+    $response = new Response();
+    $response->setSuccess(false);
+    $error = [];
+    $error['success'] = false;
+    $error['code'] = '404';
+    $error['error'] = 'Endpoint not found.';
+    $response->setData($error);
+    $response->send();
+    exit;
+}
+
+function checkPayload($jsonData)
+{
+    if (empty($jsonData) || $jsonData === null) {
+        invalidInput();
+    }
+}
+
+function invalidInput()
+{
+    $response = new Response();
+    $response->setSuccess(false);
+    $error = [];
+    $error['success'] = false;
+    $error['code'] = '404';
+    $error['error'] = 'Invalid input.';
+    $response->setData($error);
+    $response->send();
+    exit;
+}
+
+function checkIndex($jsonData, $index)
+{
+    if (!isset($jsonData[$index]) || $jsonData[$index] === '') {
+        invalidInput();
+    }
+    return trim($jsonData[$index]);
+}
+
+function returnSuccess($model, $name, $query, $data = '')
+{
+    $response = new Response();
+    $returnData = [];
+    $returnData['data'] = [$data];
+    $returnData['count'] = $query->rowCount();
+    $returnData["{$name} ID"] = $model->lastInsertedId;
+    $returnData['success'] = true;
+    $response->setData($returnData);
+    $response->send();
+    exit;
+}
+
+function checkCreate($models)
+{
+    $query = $models->create();
+    checkQuery($query, "There's something wrong with models. (create)");
+    return $query;
+}
+
+
+
 
 function sendResponse($result)
 {
@@ -84,13 +148,13 @@ function sendResponse($result)
 function checkReadAll($object)
 {
     $query = $object->readAll();
-    checkQuery($query, "There's something wrong with models");
+    checkQuery($query, "Theres something wrong with models.");
     return $query;
 }
-// returnError($conn);
 
 // $conn = null;
-// $conn = checkDatabaseConnection(); 
+// $conn = checkDatabaseConnection();
+
 // $test = new Test($conn);
 
 // $query = checkReadAll($test);
