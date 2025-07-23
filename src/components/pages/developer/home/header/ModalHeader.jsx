@@ -8,7 +8,7 @@ import { InputText, InputTextArea } from "../../../../helpers/FormInput";
 import * as Yup from "yup";
 import { apiVersion } from "../../../../helpers/function-general";
 
-const ModalAddServices = ({ setIsModal }) => {
+const ModalHeader = ({ setIsModal }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -123,4 +123,4 @@ const ModalAddServices = ({ setIsModal }) => {
   );
 };
 
-export default ModalAddServices;
+export default ModalHeader;

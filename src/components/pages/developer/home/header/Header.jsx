@@ -1,15 +1,31 @@
+import React, { use } from "react";
 import { useState } from "react";
-import { PiNotePencilFill } from "react-icons/pi";
+import { FaPen } from "react-icons/fa";
+import ModalHeader from "./ModalHeader";
+import { apiVersion } from "../../../../helpers/function-general";
+import useQueryData from "../../../../custom-hooks/useQueryData";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isPenOpen, setIsPenOpen] = useState(false);
+  const [isModalHeader, setIsModalHeader] = React.useState(false);
+  const {
+    isLoading,
+    isFetching,
+    error,
+    data: dataServices,
+  } = useQueryData(
+    `${apiVersion}/controllers/developer/web-services/web-services.php`,
+    "get",
+    "web-services"
+  );
 
   const handleAdd = () => {
-    setIsModalServices(true);
+    setIsModalHeader(true);
   };
 
   return (
+    
+  <>
     <header id="header" className="bg-white relative shadow-md w-full">
       <div className="container mx-auto px-4 py-7 flex justify-between items-center">
         {/* Logo */}
@@ -34,11 +50,11 @@ const Header = () => {
           </a>
         </nav>
         <button
-          className="hidden md:flex text-primary"
+          className="hidden md:flex text-white rounded-full bg-primary p-2"
           type="button"
           onClick={handleAdd}
         >
-          <PiNotePencilFill className="size-8" />
+          <FaPen className="size-4" />
         </button>
 
         {/* Mobile Menu Button */}
@@ -111,7 +127,12 @@ const Header = () => {
           </a>
         </div>
       )}
+
+      
     </header>
+    {isModalHeader && <ModalHeader setIsModal={setIsModalHeader} />}
+  </>
+    
   );
 };
 
