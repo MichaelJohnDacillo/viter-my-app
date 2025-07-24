@@ -8,23 +8,28 @@ import { InputText, InputTextArea } from "../../../../helpers/FormInput";
 import * as Yup from "yup";
 import { apiVersion } from "../../../../helpers/function-general";
 
-const ModalHeader = ({ setIsModal }) => {
+const ModalAddTestimonials = ({ setIsModal }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
-        `${apiVersion}/controllers/developer/web-services/web-services.php`,
+        `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
         "post", //CREATE
         values
       ),
     onSuccess: (data) => {
-      // validate reading
-      queryClient.invalidateQueries(""); // give id for refetching data.
+      // queryClient.invalidateQueries(""); // give id for refetching data.
 
-      if (!data.success) {
-        window.prompt(`Successfully created.`);
-        setIsModal(false);
+      // if (!data.success) {
+      //   window.prompt(`Successfully created.`);
+      //   setIsModal(false);
+      // }
+
+      if (data.success) {
+        alert("Successfully Created");
+      } else {
+        alert(data.error);
       }
     },
   });
@@ -38,13 +43,14 @@ const ModalHeader = ({ setIsModal }) => {
   };
 
   const initVal = {
-    header_name: "",
-    header_link: "",
-    header_url: "",
+    testimonials_name: "",
+    testimonials_testimony: "",
+    testimonials_image: "",
+    testimonials_position: "",
   };
 
   const yupSchema = Yup.object({
-    header_name: Yup.string().required("required"),
+    testimonials_name: Yup.string().required("required"),
   });
 
   React.useEffect(() => {
@@ -54,7 +60,7 @@ const ModalHeader = ({ setIsModal }) => {
   return (
     <ModalWrapper className={`${animate}`} handleClose={handleClose}>
       <div className="modal_header relative mb-4">
-        <h3 className="text-sm">Add Services</h3>
+        <h3 className="text-sm">Add Testimony</h3>
         <button
           type="button"
           className="absolute top-0.5 right-0"
@@ -79,23 +85,31 @@ const ModalHeader = ({ setIsModal }) => {
                   <div className="relative mt-3">
                     <InputText
                       label="Name"
-                      name="header_name"
+                      name="testimonials_name"
+                      type="text"
+                      disabled={mutation.isPending}
+                    />
+                  </div>
+                  <div className="relative mt-3">
+                    <InputTextArea
+                      label="Testimony"
+                      name="testimonials_testimony"
                       type="text"
                       disabled={mutation.isPending}
                     />
                   </div>
                   <div className="relative mt-3">
                     <InputText
-                      label="Page Link"
-                      name="header_link"
+                      label="Image"
+                      name="testimonials_image"
                       type="text"
                       disabled={mutation.isPending}
                     />
                   </div>
                   <div className="relative mt-3">
                     <InputText
-                      label="Page Url"
-                      name="header_url"
+                      label="Position"
+                      name="testimonials_position"
                       type="text"
                       disabled={mutation.isPending}
                     />
@@ -123,4 +137,4 @@ const ModalHeader = ({ setIsModal }) => {
   );
 };
 
-export default ModalHeader;
+export default ModalAddTestimonials;

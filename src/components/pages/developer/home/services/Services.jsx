@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import ModalAddServices from "./ModalAddServices";
 
 const Services = () => {
-  const [isModalservices, setIsModalServices] = React.useState(false);
+  const [isModalServices, setIsModalServices] = React.useState(false);
   const {
     isLoading,
     isFetching,
@@ -89,7 +89,7 @@ const Services = () => {
         </div>
       </section>
 
-      {isModalservices && <ModalAddServices setIsModal={setIsModalServices} />}
+      {isModalServices && <ModalAddServices setIsModal={setIsModalServices} />}
     </>
   );
 };

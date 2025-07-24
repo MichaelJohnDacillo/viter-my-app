@@ -13,7 +13,7 @@ const DashboardSideNav = ({isSideNavOpen, setIsSideNavOpen}) => {
     <>
         <nav className={`z-[1] w-[240px] transition-all ease-in-out duration-300 fixed left-0 top-16 ${isSideNavOpen ? "translate-x-0" : "-translate-x-full"} max-w-[224px] bg-dashboard h-[calc(100dvh-64px)] text-white relative`}>
             <span onClick={toggleSideNav} className={`absolute ${isSideNavOpen ? "" : "-right-10 !bg-dashboard"} -right-3 top-1 cursor-pointer bg-white h-[23px] w-[23px] rounded-full justify-center shadow-md group hover:bg-dashboard transition-all ease-in-out duration-200`}>
-                <IndentDecrease onClick={toggleSideNav} className={`text-dashboard h-[18px] w-[18px] group:hover:text-white transition-all ease-in-out duration-300 cursor-pointer ${isSideNavOpen ? "" : "!text-white rotate-180"}`}/>
+                <IndentDecrease onClick={toggleSideNav} className={`text-dashboard h-[18px] w-[18px] group-hover:text-white transition-all ease-in-out duration-300 cursor-pointer ${isSideNavOpen ? "" : "!text-white rotate-180"}`}/>
             </span>
             <ul className='py-5'>
                 <li className="mb-3">

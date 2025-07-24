@@ -8,24 +8,30 @@ import { InputText, InputTextArea } from "../../../../helpers/FormInput";
 import * as Yup from "yup";
 import { apiVersion } from "../../../../helpers/function-general";
 
-
-const ModalAddServices = ({ setIsModal }) => {
+const ModalAddHeader = ({ setIsModal }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
+
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
-        `${apiVersion}/controllers/developer/web-services/web-services.php`,
-        "post", //CREATE
+        `${apiVersion}/controllers/developer/header/header.php`,
+        "post",
         values
       ),
     onSuccess: (data) => {
-      // validate reading
-      queryClient.invalidateQueries(""); // give id for refetching data.
+      // queryClient.invalidateQueries(""); // give id for refetching data.
 
-      if (!data.success) {
-        window.prompt(`Successfully created.`);
-        setIsModal(false);
+      // if (!data.success) {
+      //   window.prompt(`Successfully created.`);
+      //   setIsModal(false);
+      // }
+
+      if (data.success) {
+        alert("Successfully Created");
+      } else {
+        alert(data.error);
       }
     },
   });
@@ -39,25 +45,23 @@ const ModalAddServices = ({ setIsModal }) => {
   };
 
   const initVal = {
-    web_services_name: "",
-    web_services_description: "",
-    web_services_image: "",
-    web_services_link: "",
-    web_services_text_url: "",
+    header_name: "",
+    header_link: "",
   };
 
   const yupSchema = Yup.object({
-    web_services_name: Yup.string().required("required"),
+    header_name: Yup.string().required("required"),
+    header_link: Yup.string().required("required"),
   });
 
   React.useEffect(() => {
     setAnimate("");
-  }, []); // [] is dependencies if yuu have a value inside
+  }, []);
 
   return (
     <ModalWrapper className={`${animate}`} handleClose={handleClose}>
       <div className="modal_header relative mb-4">
-        <h3 className="text-sm">Add Services</h3>
+        <h3 className="text-sm">Add Header</h3>
         <button
           type="button"
           className="absolute top-0.5 right-0"
@@ -78,48 +82,34 @@ const ModalAddServices = ({ setIsModal }) => {
           {(props) => {
             return (
               <Form>
+                {/* FORMS */}
                 <div className="modal-overflow ">
-                  <div className="relative mt-3">
+                  <div className="relative mt-5 mb-6">
                     <InputText
                       label="Name"
-                      name="web_services_name"
+                      name="header_name"
                       type="text"
                       disabled={mutation.isPending}
                     />
                   </div>
-                  <div className="relative mt-3">
-                    <InputTextArea
-                      label="Description"
-                      name="web_services_description"
-                      type="text"
-                      disabled={mutation.isPending}
-                    />
-                  </div>
-                  <div className="relative mt-3">
+                  <div className="relative mt-5 mb-6">
                     <InputText
-                      label="Image url"
-                      name="web_services_image"
+                      label="Link"
+                      name="header_link"
                       type="text"
                       disabled={mutation.isPending}
                     />
                   </div>
-                  <div className="relative mt-3">
+                  {/* <div className="relative mt-5 mb-6">
                     <InputText
-                      label="Page Link"
-                      name="web_services_link"
+                      label="Url"
+                      name="header_url"
                       type="text"
                       disabled={mutation.isPending}
                     />
-                  </div>
-                  <div className="relative mt-3">
-                    <InputText
-                      label="Page Url"
-                      name="web_services_text_url"
-                      type="text"
-                      disabled={mutation.isPending}
-                    />
-                  </div>
+                  </div> */}
                 </div>
+                {/* ACTIONS */}
                 <div className="modal_action flex justify-end absolute w-full bottom-0 mt-6 mb-4 gap-2 left-0 px-6">
                   <button type="submit" className="btn-modal-submit">
                     {mutation.isPending ? "Loading..." : "Add"}
@@ -142,4 +132,4 @@ const ModalAddServices = ({ setIsModal }) => {
   );
 };
 
-export default ModalAddServices;
+export default ModalAddHeader;
