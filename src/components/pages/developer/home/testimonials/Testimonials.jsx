@@ -16,7 +16,7 @@ const Testimonials = () => {
     isLoading,
     isFetching,
     error,
-    data: dataServices,
+    data: dataTestimonials,
   } = useQueryData(
     `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
     "get",
@@ -53,7 +53,7 @@ const Testimonials = () => {
                 className="flex transition-transform duration-300 eaase-in-out"
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
-                {dataServices?.data?.map((item, key) => {
+                {dataTestimonials?.data?.map((item, key) => {
                   return (
                     <React.Fragment key={key}>
                       <CardsTestimony item={item} />
@@ -115,7 +115,7 @@ const Testimonials = () => {
 
             {/* Dots Indicator */}
             <div className="flex justify-center mt-6 space-x-2">
-              {[0, 1, 2].map((index) => (
+              {dataTestimonials?.data?.map((item, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}

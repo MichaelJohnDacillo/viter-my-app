@@ -4,10 +4,19 @@ import ModalAddHeader from "./ModalAddHeader";
 import { apiVersion } from "../../../../helpers/function-general";
 import useQueryData from "../../../../custom-hooks/useQueryData";
 import { HiPencil } from "react-icons/hi";
+import ModalAddServices from "../services/ModalAddServices";
+import ModalAddTestimonials from "../testimonials/ModalAddTestimonials";
+
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalHeader, setIsModalHeader] = React.useState(false);
+  const [itemEdit, setItemEdit] = React.useState();
+  const [isModalHome, setIsModalHome] = React.useState(false);
+  const [isModalAbout, setIsModalAbout] = React.useState(false);
+  const [isModalTestimonials, setIsModalTestimonials] = React.useState(false);
+  const [isModalServices, setIsModalServices] = React.useState(false);
+  const [isModalContact, setIsModalContact] = React.useState(false);
   const {
     isLoading,
     isFetching,
@@ -22,6 +31,26 @@ const Header = () => {
   const handleAdd = () => {
     setIsModalHeader(true);
   };
+  const handleAddHome = () => {
+    setItemEdit(null);
+    setIsModalHome(true);
+  };
+  const handleAddAbout = () => {
+    setItemEdit(null);
+    setIsModalAbout(true);
+  };
+  const handleAddTestimonials = () => {
+    setItemEdit(null);
+    setIsModalTestimonials(true);
+  };
+  const handleAddServices = () => {
+    setItemEdit(null);
+    setIsModalServices(true);
+  };
+  const handleAddContact = () => {
+    setItemEdit(null);
+    setIsModalContact(true);
+  };
 
   return (
     <>
@@ -35,27 +64,50 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6 items-center">
-            <a href="#" className="hover:text-blue-500">
-              Home
-            </a>
-            <a href="#about" className="hover:text-blue-500">
-              About
-            </a>
-            <a href="#services" className="hover:text-blue-500">
-              Services
-            </a>
-            <a href="#contact" className="hover:text-blue-500">
-              Contact
-            </a>
             <button
-            className="tooltip"
-            data-tooltip="Add"
-            type="button"
-            // onClick={() => handleAdd(data, values)} // other syntax
-            onClick={handleAdd}
-          >
-            <HiPencil className="bg-primary text-white size-8 p-1 border transition-all ease-in-out duration-200 rounded-full" />
-          </button>
+              type="button"
+              onClick={handleAddHome}
+              className="hover:text-blue-500"
+            >
+              Home
+            </button>
+            <button
+              type="button"
+              onClick={handleAddAbout}
+              className="hover:text-blue-500"
+            >
+              About
+            </button>
+            <button
+              type="button"
+              onClick={handleAddTestimonials}
+              className="hover:text-blue-500"
+            >
+              Testimonials
+            </button>
+            <button
+              type="button"
+              onClick={handleAddServices}
+              className="hover:text-blue-500"
+            >
+              Services
+            </button>
+            <button
+              type="button"
+              onClick={handleAddContact}
+              className="hover:text-blue-500"
+            >
+              Contact
+            </button>
+            <button
+              className="tooltip"
+              data-tooltip="Add"
+              type="button"
+              // onClick={() => handleAdd(data, values)} // other syntax
+              onClick={handleAdd}
+            >
+              <HiPencil className="bg-primary text-white size-8 p-1 border transition-all ease-in-out duration-200 rounded-full" />
+            </button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -130,6 +182,21 @@ const Header = () => {
         )}
       </header>
       {isModalHeader && <ModalAddHeader setIsModal={setIsModalHeader} />}
+      {isModalHome && (
+        <ModalAddHome setIsModal={setIsModalHome} itemEdit={itemEdit} />
+      )}
+      {isModalAbout && (
+        <ModalAddAbout setIsModal={setIsModalAbout} itemEdit={itemEdit} />
+      )}
+      {isModalTestimonials && (
+        <ModalAddTestimonials setIsModal={setIsModalTestimonials} itemEdit={itemEdit} />
+      )}
+      {isModalServices && (
+        <ModalAddServices setIsModal={setIsModalServices} itemEdit={itemEdit} />
+      )}
+      {isModalContact && (
+        <ModalAddContact setIsModal={setIsModalContact} itemEdit={itemEdit} />
+      )}
     </>
   );
 };
