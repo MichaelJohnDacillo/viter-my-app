@@ -8,14 +8,18 @@ import { InputText, InputTextArea } from "../../../../helpers/FormInput";
 import * as Yup from "yup";
 import { apiVersion } from "../../../../helpers/function-general";
 
-const ModalAddTestimonials = ({ setIsModal }) => {
+const ModalAddTestimonials = ({ setIsModal, itemEdit }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
-        `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
-        "post", //CREATE
+        itemEdit
+          ? `${apiVersion}/controllers/developer/testimonials/testimonials.php?id=${itemEdit.web_services_aid}`
+          : `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
+        itemEdit
+          ? "PUT" //UPDATE
+          : "post", //CREATE
         values
       ),
     onSuccess: (data) => {
@@ -43,10 +47,10 @@ const ModalAddTestimonials = ({ setIsModal }) => {
   };
 
   const initVal = {
-    testimonials_name: "",
-    testimonials_testimony: "",
-    testimonials_image: "",
-    testimonials_position: "",
+    testimonials_name: itemEdit ? itemEdit.testimonials_name : "",
+    testimonials_testimony: itemEdit ? itemEdit.testimonials_testimony : "",
+    testimonials_image: itemEdit ? itemEdit.testimonials_image : "",
+    testimonials_position: itemEdit ? itemEdit.testimonials_position : "",
   };
 
   const yupSchema = Yup.object({
@@ -60,7 +64,7 @@ const ModalAddTestimonials = ({ setIsModal }) => {
   return (
     <ModalWrapper className={`${animate}`} handleClose={handleClose}>
       <div className="modal_header relative mb-4">
-        <h3 className="text-sm">Add Testimony</h3>
+        <h3 className="text-sm">{itemEdit ? "Edit" : "Add"} Testimony</h3>
         <button
           type="button"
           className="absolute top-0.5 right-0"
@@ -117,7 +121,11 @@ const ModalAddTestimonials = ({ setIsModal }) => {
                 </div>
                 <div className="modal_action flex justify-end absolute w-full bottom-0 mt-6 mb-4 gap-2 left-0 px-6">
                   <button type="submit" className="btn-modal-submit">
-                    {mutation.isPending ? "Loading..." : "Add"}
+                    {mutation.isPending
+                      ? "Loading..."
+                      : itemEdit
+                      ? "Save"
+                      : "Add"}
                   </button>
                   <button
                     type="reset"

@@ -28,6 +28,22 @@
 @tailwind utilities;
 
 @layer base {
+  table {
+    @apply border-collapse border-spacing-2 text-left w-full table-auto;
+  }
+  table tr:hover {
+    @apply bg-gray-100;
+  }
+  table tr {
+    @apply border-b border-solid rounded-t-md border-gray-300;
+  }
+  table th {
+    @apply font-bold bg-gray-200 py-1 pr-3 capitalize text-sm;
+  }
+  table td {
+    @apply py-2 pr-3 text-xs;
+  }
+
   input,
   select {
     @apply border-b border-l pl-2 border-solid border-gray-300 bg-transparent pt-2 w-full rounded-sm h-[40px] truncate;

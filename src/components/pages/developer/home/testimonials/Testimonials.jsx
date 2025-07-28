@@ -8,10 +8,19 @@ import {
 import useQueryData from "../../../../custom-hooks/useQueryData";
 import { apiVersion } from "../../../../helpers/function-general";
 import ModalAddTestimonials from "./ModalAddTestimonials";
+import ModalDeleteTestimonials from "./ModalDeleteTestimonials";
+import { FaList, FaPlus, FaTable } from "react-icons/fa";
+import ServicesTable from "../services/ServicesTable";
+import ServicesList from "../services/ServicesList";
+import TestimonialsTable from "./TestimonialsTable";
+import TestimonialsList from "./TestimonialsList";
 
 const Testimonials = () => {
-  const [currentSlide, setCurrentSlide] = React.useState(0);
+  // const [currentSlide, setCurrentSlide] = React.useState(0);
   const [isModalTestimonials, setIsModalTestimonials] = React.useState(false);
+  const [isDeleteTestimonials, setIsDeleteTestimonials] = React.useState(false);
+  const [itemEdit, setItemEdit] = React.useState();
+  const [isTable, setIsTable] = React.useState(false);
   const {
     isLoading,
     isFetching,
@@ -23,7 +32,24 @@ const Testimonials = () => {
     "testimonials"
   );
 
+  console.log(isTable);
+
+  const handleToggleTable = () => {
+    setIsTable(!isTable);
+  };
+
+  const handleEdit = (item) => {
+    setItemEdit(item);
+    setIsModalTestimonials(true);
+  };
+
+  const handleDelete = (item) => {
+    setItemEdit(item);
+    setIsDeleteTestimonials(true);
+  };
+
   const handleAdd = () => {
+    setItemEdit(null);
     setIsModalTestimonials(true);
   };
   return (
@@ -34,6 +60,24 @@ const Testimonials = () => {
             Client Testimonials
           </h2>
           <div className="flex justify-end">
+            {/* UI */}
+            <button
+              className="flex items-center gap-2 hover:underline hover:text-primary"
+              type="button"
+              onClick={handleToggleTable} //step 2 in update
+            >
+              {isTable == true ? (
+                <>
+                  <FaList className="size-3" />
+                  List
+                </>
+              ) : (
+                <>
+                  <FaTable className="size-3" />
+                  Table
+                </>
+              )}
+            </button>
             <button
               className="tooltip"
               data-tooltip="Add"
@@ -44,92 +88,44 @@ const Testimonials = () => {
               <HiPencil className="bg-primary text-white size-8 p-1 border transition-all ease-in-out duration-200 rounded-full" />
             </button>
           </div>
+          {/* 3-column Grid */}
 
-          {/* Testimonials Slider */}
-          <div className="relative max-w-4xl mx-auto">
-            {/* slides */}
-            <div className="overflow-hidden">
-              <div
-                className="flex transition-transform duration-300 eaase-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {dataTestimonials?.data?.map((item, key) => {
-                  return (
-                    <React.Fragment key={key}>
-                      <CardsTestimony item={item} />
-                    </React.Fragment>
-                  );
-                })}
-                {/* Testimonial 1 */}
-                {/* <CardsTestimony
-                  image={"./images/testimonials-1.webp"}
-                  alt={"Sarah Johnson"}
-                  testimony={
-                    "The team delivered our project ahead of schedule with exceptional quality. Our online sales increased by 120% within three months!"
-                  }
-                  name={"Sarah Johnson"}
-                  position={"Marketing Director"}
-                /> */}
+          {isTable == true ? (
+            <>
+              <TestimonialsTable
+                isLoading={isLoading}
+                isFetching={isFetching}
+                error={error}
+                dataTestimonials={dataTestimonials}
+                handleAdd={handleAdd}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            </>
+          ) : (
+            <TestimonialsList
+              isLoading={isLoading}
+              isFetching={isFetching}
+              error={error}
+              dataTestimonials={dataTestimonials}
+              handleAdd={handleAdd}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          )}
 
-                {/* Testimonial 2 */}
-                {/* <CardsTestimony
-                  image={"./images/testimonials-2.webp"}
-                  alt={"Michael Chen"}
-                  testimony={
-                    "From design to deployment, their attention to detail was impressive. They became true partners in our digital transformation journey."
-                  }
-                  name={"Michael Chen"}
-                  position={"CEO, StartupHub"}
-                /> */}
-
-                {/* Testimonial 3 */}
-                {/* <CardsTestimony
-                  image={"./images/testimonials-3.webp"}
-                  alt={"Emma Rodriguez"}
-                  testimony={
-                    "Their SEO strategy tripled our organic traffic in 6 months. We've seen a dramatic improvement in lead quality and conversion rates."
-                  }
-                  name={"Emma Rodriguez"}
-                  position={"CMO, GrowthSolutions"}
-                /> */}
-              </div>
-            </div>
-
-            {/* Navigation Arrows */}
-            <button
-              onClick={() =>
-                setCurrentSlide((prev) => (prev == 0 ? 2 : prev - 1))
-              }
-              className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
-            >
-              <HiOutlineChevronLeft className="w-6 h-6 text-gray-600" />
-            </button>
-            <button
-              onClick={() =>
-                setCurrentSlide((prev) => (prev == 2 ? 0 : prev + 1))
-              }
-              className="absolute right-0 top-1/2 -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
-            >
-              <HiOutlineChevronRight className="w-6 h-6 text-gray-600" />
-            </button>
-
-            {/* Dots Indicator */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {dataTestimonials?.data?.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full ${
-                    currentSlide === index ? "bg-blue-600" : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
+          
         </div>
       </section>
       {isModalTestimonials && (
         <ModalAddTestimonials setIsModal={setIsModalTestimonials} />
+      )}
+      {isDeleteTestimonials && (
+        <ModalDeleteTestimonials
+          setModalDelete={setIsDeleteTestimonials}
+          mySqlEndpoint={`${apiVersion}/controllers/developer/testimonials/testimonials.php?id=${itemEdit.testimonials_aid}`}
+          queryKey="testimonials"
+        />
       )}
     </>
   );
