@@ -5,6 +5,7 @@ const CardsTestimony = ({ item }) => {
     <>
       <div className="w-full flex-shrink-0 px-4">
         <div className="bg-white p-8 rounded-xl shadow-md text-center">
+          
           <img
             src={item.testimonials_image}
             alt={item.testimonials_image}

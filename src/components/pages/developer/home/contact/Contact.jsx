@@ -1,6 +1,119 @@
 import React from "react";
+import { FaList, FaPlus, FaTable } from "react-icons/fa";
+import useQueryData from "../../../../custom-hooks/useQueryData";
+import { apiVersion } from "../../../../helpers/function-general";
+import ModalDeleteContact from "./ModalDeleteContact";
+import ModalAddContact from "./ModalAddContact";
+import { InputText, InputTextArea } from "../../../../helpers/FormInput";
+import { Form, Formik } from "formik";
+import { queryData } from "../../../../custom-hooks/queryData";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import * as Yup from "yup";
 
 const Contact = () => {
+  const [isModalContact, setIsModalContact] = React.useState(false);
+  const [isDeleteContact, setIsDeleteContact] = React.useState(false);
+  const [itemEdit, setItemEdit] = React.useState();
+  const [isTable, setIsTable] = React.useState(false);
+
+  const [animate, setAnimate] = React.useState("translate-x-full");
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (values) =>
+      queryData(
+        itemEdit
+          ? `${apiVersion}/controllers/developer/contact/contact.php?id=${itemEdit.contact_aid}`
+          : `${apiVersion}/controllers/developer/contact/contact.php`,
+        itemEdit
+          ? "PUT" //UPDATE
+          : "post", //CREATE
+        values
+      ),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["contact"] }); // give id for refetching data.
+
+      if (data.success) {
+        alert("Successfully Created");
+        setIsModal(false);
+      } else {
+        alert(data.error);
+      }
+      // give
+
+      // if (data.success) {
+      //   alert("Successfully Created");
+      // } else {
+      //   alert(data.error);
+      // }
+    },
+    // onSuccess: (data) => {
+    //   // validate reading
+    //   queryClient.invalidateQueries(""); // give id for refetching data.
+
+    //   if (!data.success) {
+    //     window.prompt(`Successfully created.`);
+    //     setIsModal(false);
+    //   }
+    // },
+  });
+
+  const handleClose = () => {
+    if (mutation.isPending) return; // don't close while query is ongoing
+    setAnimate("translate-x-full");
+    setTimeout(() => {
+      setIsModal(false); //close upon animation exit
+    }, 200);
+  };
+
+  const initVal = {
+    contact_fullname: itemEdit ? itemEdit.contact_fullname : "",
+    contact_email: itemEdit ? itemEdit.contact_email : "",
+    contact_message: itemEdit ? itemEdit.contact_message : "",
+  };
+
+  const yupSchema = Yup.object({
+    contact_fullname: Yup.string().required("required"),
+    contact_email: Yup.string().required("required"),
+    contact_message: Yup.string().required("required"),
+  });
+
+  React.useEffect(() => {
+    setAnimate("");
+  }, []);
+
+  const {
+    isLoading,
+    isFetching,
+    error,
+    data: dataContact,
+  } = useQueryData(
+    `${apiVersion}/controllers/developer/contact/contact.php`,
+    "get",
+    "contact"
+  );
+
+  console.log(isTable);
+
+  const handleToggleTable = () => {
+    setIsTable(!isTable);
+  };
+
+  const handleAdd = () => {
+    setItemEdit(null);
+    setIsModalContact(true);
+  };
+
+  const handleEdit = (item) => {
+    setItemEdit(item);
+    setIsModalContact(true);
+  };
+
+  const handleDelete = (item) => {
+    setItemEdit(item);
+    setIsDeleteContact(true);
+  };
   return (
     <>
       {/* Contact */}
@@ -105,24 +218,111 @@ const Contact = () => {
                 </li>
               </ul>
             </div>
-            <form className="contact bg-gray-50 rounded-xl p-8 h-fit md:w-1/2">
-              <div className="relative">
-                <label>Full Name</label>
-                <input type="text" />
-              </div>
-              <div className="relative">
-                <label>Email Address</label>
-                <input type="text" />
-              </div>
-              <div className="relative">
-                <label className="top-0">Message</label>
-                <textarea rows="4"></textarea>
-              </div>
-              <button className="btn btn--blue">Send Message</button>
-            </form>
+
+            <Formik
+              initialValues={initVal}
+              validationSchema={yupSchema}
+              onSubmit={async (values, { setSubmitting, resetForm }) => {
+                console.log(values);
+                mutation.mutate(values);
+              }}
+            >
+              {(props) => {
+                return (
+                  <form className="contact bg-gray-50 rounded-xl p-8 h-fit md:w-1/2">
+                    <div className="flex justify-end right-0 top-1/3">
+                      <div className="flex items-center gap-x-3">
+                        {/* UI */}
+                        <button
+                          className="flex items-center gap-2 hover:underline"
+                          type="button"
+                          onClick={handleToggleTable} //step 2 in update
+                        >
+                          {isTable == true ? (
+                            <>
+                              <FaList className="size-3" />
+                              List
+                            </>
+                          ) : (
+                            <>
+                              <FaTable className="size-3" />
+                              Table
+                              <button
+                                className="flex items-center gap-2 hover:underline"
+                                type="button"
+                                onClick={handleAdd} //step 2 in update
+                              >
+                                <FaPlus className="size-3" />
+                                Add
+                              </button>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* <div className="relative mt-3">
+                      <InputText
+                        label="Full Name"
+                        name="contact_fullname"
+                        type="text"
+                        disabled={mutation.isPending}
+                      />
+                    </div>
+                    <div className="relative mt-3">
+                      <InputTextArea
+                        label="Email Address"
+                        name="contact_email"
+                        type="text"
+                        disabled={mutation.isPending}
+                      />
+                    </div>
+                    <div className="relative mt-3">
+                      <InputText
+                        label="Message"
+                        name="contact_message"
+                        type="text"
+                        disabled={mutation.isPending}
+                      />
+                    </div> */}
+
+                    <div className="relative">
+                      <label>Full Name</label>
+                      <input type="text" />
+                    </div>
+                    <div className="relative">
+                      <label>Email Address</label>
+                      <input type="text" />
+                    </div>
+                    <div className="relative">
+                      <label className="top-0">Message</label>
+                      <textarea rows="4"></textarea>
+                    </div>
+                    <button type="submit" className="btn-modal-submit">
+                      {mutation.isPending
+                        ? "Loading..."
+                        : itemEdit
+                        ? "Save"
+                        : "Add"}
+                    </button>
+                  </form>
+                );
+              }}
+            </Formik>
           </div>
         </div>
       </section>
+
+      {isModalContact && (
+        <ModalAddContact setIsModal={setIsModalContact} itemEdit={itemEdit} />
+      )}
+      {isDeleteContact && (
+        <ModalDeleteContact
+          setModalDelete={setIsDeleteContact}
+          mySqlEndpoint={`${apiVersion}/controllers/developer/contact/contact.php?id=${itemEdit.contact_aid}`}
+          queryKey="contact"
+        />
+      )}
     </>
   );
 };

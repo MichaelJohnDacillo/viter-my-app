@@ -124,7 +124,7 @@
   }
   @layer utilities {
     .tooltip {
-      @apply hidden md:flex relative p-1 bg-transparent leading-none z-20;
+      @apply md:flex relative p-1 bg-transparent leading-none z-20;
     }
   }
   .tooltip::after {

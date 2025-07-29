@@ -25,13 +25,15 @@ const ModalAddServices = ({ setIsModal, itemEdit }) => {
         values
       ),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["web-services"]}); // give id for refetching data.
+      queryClient.invalidateQueries({ queryKey: ["web-services"] }); // give id for refetching data.
 
-      // if (!data.success) {
-      //   window.prompt(`Successfully created.`);
-      //   setIsModal(false);
-      // }
-       // give
+      if (data.success) {
+        alert("Successfully Created");
+        setIsModal(false);
+      } else {
+        alert(data.error);
+      }
+      // give
 
       // if (data.success) {
       //   alert("Successfully Created");

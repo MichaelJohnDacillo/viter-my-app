@@ -10,8 +10,6 @@ import { apiVersion } from "../../../../helpers/function-general";
 import ModalAddTestimonials from "./ModalAddTestimonials";
 import ModalDeleteTestimonials from "./ModalDeleteTestimonials";
 import { FaList, FaPlus, FaTable } from "react-icons/fa";
-import ServicesTable from "../services/ServicesTable";
-import ServicesList from "../services/ServicesList";
 import TestimonialsTable from "./TestimonialsTable";
 import TestimonialsList from "./TestimonialsList";
 
@@ -59,7 +57,7 @@ const Testimonials = () => {
           <h2 className="text-3xl font-bold text-center mb-12">
             Client Testimonials
           </h2>
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
             {/* UI */}
             <button
               className="flex items-center gap-2 hover:underline hover:text-primary"
@@ -79,13 +77,12 @@ const Testimonials = () => {
               )}
             </button>
             <button
-              className="tooltip"
-              data-tooltip="Add"
+              className="flex items-center gap-2 hover:underline hover:text-primary"
               type="button"
-              // onClick={() => handleAdd(data, values)} // other syntax
-              onClick={handleAdd}
+              onClick={handleAdd} //step 2 in update
             >
-              <HiPencil className="bg-primary text-white size-8 p-1 border transition-all ease-in-out duration-200 rounded-full" />
+              <FaPlus className="size-3" />
+              Add
             </button>
           </div>
           {/* 3-column Grid */}
@@ -113,12 +110,13 @@ const Testimonials = () => {
               handleDelete={handleDelete}
             />
           )}
-
-          
         </div>
       </section>
       {isModalTestimonials && (
-        <ModalAddTestimonials setIsModal={setIsModalTestimonials} />
+        <ModalAddTestimonials
+          setIsModal={setIsModalTestimonials}
+          itemEdit={itemEdit}
+        />
       )}
       {isDeleteTestimonials && (
         <ModalDeleteTestimonials

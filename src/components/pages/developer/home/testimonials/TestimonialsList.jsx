@@ -14,6 +14,23 @@ const TestimonialsList = ({
   handleDelete,
 }) => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
+  const prevTestimonialCountRef = React.useRef(0);
+
+  React.useEffect(() => {
+    const testimonialCount = dataTestimonials?.data?.length ?? 0;
+    const prevTestimonialCount = prevTestimonialCountRef.current;
+
+    if (testimonialCount === 0) {
+      setCurrentSlide(0);
+    } else if (currentSlide >= testimonialCount) {
+      setCurrentSlide(testimonialCount - 1); // Adjust if current slide is out of bounds
+    } else if (testimonialCount > prevTestimonialCount) {
+      setCurrentSlide(testimonialCount - 1);
+    }
+    
+
+    prevTestimonialCountRef.current = testimonialCount;
+  }, [dataTestimonials?.data?.length]); // Only re-run when dataTestimonials.data changes
   return (
     <>
       {/* TABLE STEP 5 */}
@@ -30,7 +47,7 @@ const TestimonialsList = ({
                 <React.Fragment key={key}>
                   {/* UPDATE STEP 1 */}
                   <div className="relative">
-                    <div className="absolute flex left-[50.5rem] top-6">
+                    <div className="absolute flex sm:left-[20.7rem] md:left-[28.8rem] lg:left-[44.75rem] xl:left-[52.75rem] top-0">
                       <button
                         type="button"
                         data-tooltip="Edit"

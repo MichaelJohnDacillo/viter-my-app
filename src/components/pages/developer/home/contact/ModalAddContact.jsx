@@ -8,27 +8,24 @@ import { InputText, InputTextArea } from "../../../../helpers/FormInput";
 import * as Yup from "yup";
 import { apiVersion } from "../../../../helpers/function-general";
 
-const ModalAddTestimonials = ({ setIsModal, itemEdit }) => {
+const ModalAddContact = ({ setIsModal, itemEdit }) => {
   const [animate, setAnimate] = React.useState("translate-x-full");
+
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
         itemEdit
-          ? `${apiVersion}/controllers/developer/testimonials/testimonials.php?id=${itemEdit.testimonials_aid}`
-          : `${apiVersion}/controllers/developer/testimonials/testimonials.php`,
+          ? `${apiVersion}/controllers/developer/contact/contact.php?id=${itemEdit.contact_aid}`
+          : `${apiVersion}/controllers/developer/contact/contact.php`,
         itemEdit
           ? "PUT" //UPDATE
           : "post", //CREATE
         values
       ),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["testimonials"] }); // give id for refetching data.
-
-      // if (!data.success) {
-      //   window.prompt(`Successfully created.`);
-      //   setIsModal(false);
-      // }
+      queryClient.invalidateQueries({ queryKey: ["contact"] }); // give id for refetching data.
 
       if (data.success) {
         alert("Successfully Created");
@@ -36,7 +33,23 @@ const ModalAddTestimonials = ({ setIsModal, itemEdit }) => {
       } else {
         alert(data.error);
       }
+      // give
+
+      // if (data.success) {
+      //   alert("Successfully Created");
+      // } else {
+      //   alert(data.error);
+      // }
     },
+    // onSuccess: (data) => {
+    //   // validate reading
+    //   queryClient.invalidateQueries(""); // give id for refetching data.
+
+    //   if (!data.success) {
+    //     window.prompt(`Successfully created.`);
+    //     setIsModal(false);
+    //   }
+    // },
   });
 
   const handleClose = () => {
@@ -48,24 +61,25 @@ const ModalAddTestimonials = ({ setIsModal, itemEdit }) => {
   };
 
   const initVal = {
-    testimonials_name: itemEdit ? itemEdit.testimonials_name : "",
-    testimonials_testimony: itemEdit ? itemEdit.testimonials_testimony : "",
-    testimonials_image: itemEdit ? itemEdit.testimonials_image : "",
-    testimonials_position: itemEdit ? itemEdit.testimonials_position : "",
+    contact_fullname: itemEdit ? itemEdit.contact_fullname : "",
+    contact_email: itemEdit ? itemEdit.contact_email : "",
+    contact_message: itemEdit ? itemEdit.contact_message : "",
   };
 
   const yupSchema = Yup.object({
-    testimonials_name: Yup.string().required("required"),
+    contact_fullname: Yup.string().required("required"),
+    contact_email: Yup.string().required("required"),
+    contact_message: Yup.string().required("required"),
   });
 
   React.useEffect(() => {
     setAnimate("");
-  }, []); // [] is dependencies if yuu have a value inside
+  }, []);
 
   return (
     <ModalWrapper className={`${animate}`} handleClose={handleClose}>
       <div className="modal_header relative mb-4">
-        <h3 className="text-sm">{itemEdit ? "Edit" : "Add"} Testimony</h3>
+        <h3 className="text-sm">{itemEdit ? "Edit" : "Add"} Contact</h3>
         <button
           type="button"
           className="absolute top-0.5 right-0"
@@ -89,32 +103,24 @@ const ModalAddTestimonials = ({ setIsModal, itemEdit }) => {
                 <div className="modal-overflow ">
                   <div className="relative mt-3">
                     <InputText
-                      label="Name"
-                      name="testimonials_name"
+                      label="Full Name"
+                      name="contact_fullname"
                       type="text"
                       disabled={mutation.isPending}
                     />
                   </div>
                   <div className="relative mt-3">
                     <InputTextArea
-                      label="Testimony"
-                      name="testimonials_testimony"
+                      label="Email Address"
+                      name="contact_email"
                       type="text"
                       disabled={mutation.isPending}
                     />
                   </div>
                   <div className="relative mt-3">
                     <InputText
-                      label="Image"
-                      name="testimonials_image"
-                      type="text"
-                      disabled={mutation.isPending}
-                    />
-                  </div>
-                  <div className="relative mt-3">
-                    <InputText
-                      label="Position"
-                      name="testimonials_position"
+                      label="Message"
+                      name="contact_message"
                       type="text"
                       disabled={mutation.isPending}
                     />
@@ -146,4 +152,4 @@ const ModalAddTestimonials = ({ setIsModal, itemEdit }) => {
   );
 };
 
-export default ModalAddTestimonials;
+export default ModalAddContact;
