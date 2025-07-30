@@ -1,87 +1,21 @@
+import { Form, Formik } from "formik";
 import React from "react";
 import { FaList, FaPlus, FaTable } from "react-icons/fa";
-import useQueryData from "../../../../custom-hooks/useQueryData";
-import { apiVersion } from "../../../../helpers/function-general";
-import ModalDeleteContact from "./ModalDeleteContact";
-import ModalAddContact from "./ModalAddContact";
-import { InputText, InputTextArea } from "../../../../helpers/FormInput";
-import { Form, Formik } from "formik";
+
 import { queryData } from "../../../../custom-hooks/queryData";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiVersion } from "../../../../helpers/function-general";
 import * as Yup from "yup";
+import ContactList from "./ContactList";
+import ContactTable from "./ContactTable";
+import useQueryData from "../../../../custom-hooks/useQueryData";
+import { InputText, InputTextArea } from "../../../../helpers/FormInput";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Contact = () => {
   const [isModalContact, setIsModalContact] = React.useState(false);
   const [isDeleteContact, setIsDeleteContact] = React.useState(false);
   const [itemEdit, setItemEdit] = React.useState();
   const [isTable, setIsTable] = React.useState(false);
-
-  const [animate, setAnimate] = React.useState("translate-x-full");
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: (values) =>
-      queryData(
-        itemEdit
-          ? `${apiVersion}/controllers/developer/contact/contact.php?id=${itemEdit.contact_aid}`
-          : `${apiVersion}/controllers/developer/contact/contact.php`,
-        itemEdit
-          ? "PUT" //UPDATE
-          : "post", //CREATE
-        values
-      ),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["contact"] }); // give id for refetching data.
-
-      if (data.success) {
-        alert("Successfully Created");
-        setIsModal(false);
-      } else {
-        alert(data.error);
-      }
-      // give
-
-      // if (data.success) {
-      //   alert("Successfully Created");
-      // } else {
-      //   alert(data.error);
-      // }
-    },
-    // onSuccess: (data) => {
-    //   // validate reading
-    //   queryClient.invalidateQueries(""); // give id for refetching data.
-
-    //   if (!data.success) {
-    //     window.prompt(`Successfully created.`);
-    //     setIsModal(false);
-    //   }
-    // },
-  });
-
-  const handleClose = () => {
-    if (mutation.isPending) return; // don't close while query is ongoing
-    setAnimate("translate-x-full");
-    setTimeout(() => {
-      setIsModal(false); //close upon animation exit
-    }, 200);
-  };
-
-  const initVal = {
-    contact_fullname: itemEdit ? itemEdit.contact_fullname : "",
-    contact_email: itemEdit ? itemEdit.contact_email : "",
-    contact_message: itemEdit ? itemEdit.contact_message : "",
-  };
-
-  const yupSchema = Yup.object({
-    contact_fullname: Yup.string().required("required"),
-    contact_email: Yup.string().required("required"),
-    contact_message: Yup.string().required("required"),
-  });
-
-  React.useEffect(() => {
-    setAnimate("");
-  }, []);
 
   const {
     isLoading,
@@ -93,7 +27,6 @@ const Contact = () => {
     "get",
     "contact"
   );
-
   console.log(isTable);
 
   const handleToggleTable = () => {
@@ -114,14 +47,49 @@ const Contact = () => {
     setItemEdit(item);
     setIsDeleteContact(true);
   };
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (values) =>
+      queryData(
+        `${apiVersion}/controllers/developer/contact/contact.php`,
+        "post", //CREATE
+        values
+      ),
+    onSuccess: (data) => {
+      //validate reading
+      queryClient.invalidateQueries({ queryKey: ["contact"] });
+
+      if (!data.success) {
+        alert(data.error);
+      } else {
+        alert("Successfully created.");
+      }
+    },
+  });
+
+  const yupSchema = Yup.object({
+    contact_fullname: Yup.string().required("required"),
+    contact_email: Yup.string().required("required"),
+    contact_message: Yup.string().required("required"),
+  });
+
+  const initVal = {
+    //step 8 - initial values for formik
+    contact_fullname: "",
+    contact_email: "",
+    contact_message: "",
+
+    contact_email_old: itemEdit ? itemEdit.contact_email_old : "",
+  };
+
   return (
     <>
-      {/* Contact */}
       <section id="contact" className="bg-white py-12 md:py-20">
         <div className="container">
           <h2 className="title text-center">Get In Touch</h2>
           <div className="flex flex-col gap-10 mt-12 md:flex-row">
-            <div className="bg-gray-50 rounded-xl p-8 h-fit md:w-1/2">
+            <div className="bg-gray-50 rounded-xl p-8 h-fit md:w-1/3">
               <h5>Our Office</h5>
               <ul className="flex gap-3 mt-6 mb-4">
                 <li>
@@ -132,21 +100,23 @@ const Contact = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#2563eb"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-map-pin-icon lucide-map-pin"
                   >
                     <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
                 </li>
+
                 <li>
                   <h6 className="font-medium">Address</h6>
                   <p>123 Business Avenue</p>
                   <p>San Francisco, CA 94107</p>
                 </li>
               </ul>
+
               <ul className="flex gap-3 mb-4">
                 <li>
                   <svg
@@ -156,19 +126,21 @@ const Contact = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#2563eb"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-phone-icon lucide-phone"
                   >
                     <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                   </svg>
                 </li>
+
                 <li>
                   <h6 className="font-medium">Phone</h6>
                   <p>+1 (555) 123-4567</p>
                 </li>
               </ul>
+
               <ul className="flex gap-3 mb-8">
                 <li>
                   <svg
@@ -178,21 +150,24 @@ const Contact = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="#2563eb"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-mail-icon lucide-mail"
                   >
                     <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                     <rect x="2" y="4" width="20" height="16" rx="2" />
                   </svg>
                 </li>
+
                 <li>
                   <h6 className="font-medium">Email</h6>
                   <p>hello@myapp.com</p>
                 </li>
               </ul>
+
               <h6 className="font-medium mb-4">Business Hours</h6>
+
               <ul className="flex justify-between items-center">
                 <li>
                   <p>Monday-Friday</p>
@@ -201,6 +176,7 @@ const Contact = () => {
                   <p>9:00 AM - 5:00 PM</p>
                 </li>
               </ul>
+
               <ul className="flex justify-between items-center">
                 <li>
                   <p>Saturday</p>
@@ -209,6 +185,7 @@ const Contact = () => {
                   <p>10:00 AM - 2:00 PM</p>
                 </li>
               </ul>
+
               <ul className="flex justify-between items-center">
                 <li>
                   <p>Sunday</p>
@@ -218,111 +195,94 @@ const Contact = () => {
                 </li>
               </ul>
             </div>
-
-            <Formik
-              initialValues={initVal}
-              validationSchema={yupSchema}
-              onSubmit={async (values, { setSubmitting, resetForm }) => {
-                console.log(values);
-                mutation.mutate(values);
-              }}
-            >
-              {(props) => {
-                return (
-                  <form className="contact bg-gray-50 rounded-xl p-8 h-fit md:w-1/2">
-                    <div className="flex justify-end right-0 top-1/3">
-                      <div className="flex items-center gap-x-3">
-                        {/* UI */}
+            <div className="bg-gray-50 rounded-xl p-10 h-fit md:w-3/4">
+              <div className="flex justify-end">
+                <div className="flex items-center gap-x-3">
+                  {/* UI */}
+                  <button
+                    className="flex items-center gap-2 hover:underline hover:text-primary"
+                    type="button"
+                    onClick={handleToggleTable} //step 2 in update
+                  >
+                    {isTable == true ? (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <FaList className="size-3" />
+                          List
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <FaTable className="size-3" />
+                        Table
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+              {/* DELETE */}
+              {isTable == true ? (
+                <>
+                  <div>
+                    <ContactTable
+                      isLoading={isLoading}
+                      isFetching={isFetching}
+                      error={error}
+                      dataContact={dataContact}
+                      handleEdit={handleEdit}
+                      handleDelete={handleDelete}
+                    />
+                  </div>
+                </>
+              ) : (
+                <Formik
+                  initialValues={initVal}
+                  validationSchema={yupSchema}
+                  onSubmit={async (values, { resetForm }) => {
+                    mutation.mutate(values);
+                    resetForm();
+                  }}
+                >
+                  {(props) => {
+                    return (
+                      <Form className="contact ">
+                        <div className="contact relative">
+                          <InputText
+                            label="Full Name"
+                            name="contact_fullname"
+                            type="text"
+                          />
+                        </div>
+                        <div className="contact relative mt-3">
+                          <InputText
+                            label="Email Address"
+                            name="contact_email"
+                            type="text"
+                          />
+                        </div>
+                        <div className="contact relative mt-6">
+                          <InputTextArea
+                            label="Message"
+                            name="contact_message"
+                            type="text"
+                          />
+                        </div>
                         <button
-                          className="flex items-center gap-2 hover:underline"
-                          type="button"
-                          onClick={handleToggleTable} //step 2 in update
+                          type="submit"
+                          className="btn btn--blue"
+                          onClick={handleAdd}
                         >
-                          {isTable == true ? (
-                            <>
-                              <FaList className="size-3" />
-                              List
-                            </>
-                          ) : (
-                            <>
-                              <FaTable className="size-3" />
-                              Table
-                              <button
-                                className="flex items-center gap-2 hover:underline"
-                                type="button"
-                                onClick={handleAdd} //step 2 in update
-                              >
-                                <FaPlus className="size-3" />
-                                Add
-                              </button>
-                            </>
-                          )}
+                          Send Message
                         </button>
-                      </div>
-                    </div>
-
-                    {/* <div className="relative mt-3">
-                      <InputText
-                        label="Full Name"
-                        name="contact_fullname"
-                        type="text"
-                        disabled={mutation.isPending}
-                      />
-                    </div>
-                    <div className="relative mt-3">
-                      <InputTextArea
-                        label="Email Address"
-                        name="contact_email"
-                        type="text"
-                        disabled={mutation.isPending}
-                      />
-                    </div>
-                    <div className="relative mt-3">
-                      <InputText
-                        label="Message"
-                        name="contact_message"
-                        type="text"
-                        disabled={mutation.isPending}
-                      />
-                    </div> */}
-
-                    <div className="relative">
-                      <label>Full Name</label>
-                      <input type="text" />
-                    </div>
-                    <div className="relative">
-                      <label>Email Address</label>
-                      <input type="text" />
-                    </div>
-                    <div className="relative">
-                      <label className="top-0">Message</label>
-                      <textarea rows="4"></textarea>
-                    </div>
-                    <button type="submit" className="btn-modal-submit">
-                      {mutation.isPending
-                        ? "Loading..."
-                        : itemEdit
-                        ? "Save"
-                        : "Add"}
-                    </button>
-                  </form>
-                );
-              }}
-            </Formik>
+                      </Form>
+                    );
+                  }}
+                </Formik>
+              )}
+            </div>
           </div>
         </div>
       </section>
-
-      {isModalContact && (
-        <ModalAddContact setIsModal={setIsModalContact} itemEdit={itemEdit} />
-      )}
-      {isDeleteContact && (
-        <ModalDeleteContact
-          setModalDelete={setIsDeleteContact}
-          mySqlEndpoint={`${apiVersion}/controllers/developer/contact/contact.php?id=${itemEdit.contact_aid}`}
-          queryKey="contact"
-        />
-      )}
     </>
   );
 };

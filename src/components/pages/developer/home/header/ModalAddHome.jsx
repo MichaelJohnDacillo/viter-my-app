@@ -25,13 +25,13 @@ const ModalAddServices = ({ setIsModal, itemEdit }) => {
         values
       ),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["web-services"]}); // give id for refetching data.
+      queryClient.invalidateQueries({ queryKey: ["web-services"] }); // give id for refetching data.
 
       // if (!data.success) {
       //   window.prompt(`Successfully created.`);
       //   setIsModal(false);
       // }
-       // give
+      // give
 
       // if (data.success) {
       //   alert("Successfully Created");
@@ -142,11 +142,7 @@ const ModalAddServices = ({ setIsModal, itemEdit }) => {
                 </div>
                 <div className="modal_action flex justify-end absolute w-full bottom-0 mt-6 mb-4 gap-2 left-0 px-6">
                   <button type="submit" className="btn-modal-submit">
-                    {mutation.isPending
-                      ? "Loading..."
-                      : itemEdit
-                      ? "Save"
-                      : "Add"}
+                    Add
                   </button>
                   <button
                     type="reset"

@@ -162,11 +162,6 @@ function checkUpdate($models)
     return $query;
 }
 
-
-
-
-
-
 function sendResponse($result)
 {
     $response = new Response();
@@ -181,6 +176,48 @@ function checkReadAll($object)
     $query = $object->readAll();
     checkQuery($query, "Theres something wrong with models.");
     return $query;
+}
+
+function checkExistence($count, $msg = '')
+{
+    if ($count > 0) {
+        $response = new Response();
+        $error = [];
+        $response->setSuccess(false);
+        $error['error'] = $msg;
+        $response->setData($error);
+        $response->send();
+        exit;
+    }
+}
+
+function isNameExist($models, $name)
+{
+    $query = $models->checkName();
+    $count = $query->rowCount();
+    checkExistence($count, "{$name} already exist.");
+}
+
+function compareName($models, $name_old, $name)
+{
+    if (strtolower($name_old) != strtolower($name)) {
+        isNameExist($models, $name);
+    }
+}
+
+
+function isEmailExist($models, $email)
+{
+    $query = $models->checkEmail();
+    $count = $query->rowCount();
+    checkExistence($count, "{$email} already exist.");
+}
+
+function compareEmail($models, $email_old, $email)
+{
+    if (strtolower($email_old) != strtolower($email)) {
+        isEmailExist($models, $email);
+    }
 }
 
 // $conn = null;

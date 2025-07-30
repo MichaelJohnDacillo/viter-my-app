@@ -64,6 +64,8 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
     contact_fullname: itemEdit ? itemEdit.contact_fullname : "",
     contact_email: itemEdit ? itemEdit.contact_email : "",
     contact_message: itemEdit ? itemEdit.contact_message : "",
+
+    contact_email_old: itemEdit ? itemEdit.contact_email : "",
   };
 
   const yupSchema = Yup.object({
@@ -95,6 +97,7 @@ const ModalAddContact = ({ setIsModal, itemEdit }) => {
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             console.log(values);
             mutation.mutate(values);
+            resetForm();
           }}
         >
           {(props) => {
