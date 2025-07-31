@@ -8,6 +8,9 @@ import { FaPencil } from "react-icons/fa6";
 import ModalDeleteServices from "./ModalDeleteServices";
 import ServicesList from "./ServicesList";
 import ServicesTable from "./ServicesTable";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { queryDataInfinite } from "../../../../custom-hooks/queryDataInfinite";
+import { InView, useInView } from "react-intersection-observer";
 
 const Services = () => {
   const [isModalServices, setIsModalServices] = React.useState(false);
@@ -15,18 +18,52 @@ const Services = () => {
   const [itemEdit, setItemEdit] = React.useState();
   const [isTable, setIsTable] = React.useState(false);
 
-  const {
-    isLoading,
-    isFetching,
-    error,
-    data: dataServices,
-  } = useQueryData(
-    `${apiVersion}/controllers/developer/web-services/web-services.php`,
-    "get",
-    "web-services"
-  );
+  const [page, setPage] = React.useState(1);
+  const { ref, InView } = useInView();
 
-  console.log(isTable);
+  // const {
+  //   isLoading,
+  //   isFetching: isFetchingDataServices,
+  //   error: ErrorDataServices,
+  //   data: dataServices,
+  // } = useQueryData(
+  //   `${apiVersion}/controllers/developer/web-services/web-services.php`,
+  //   "get",
+  //   "web-services"
+  // );
+
+  const {
+    data: result,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["web-services"],
+    queryFn: async ({ pageParam = 1 }) =>
+      await queryDataInfinite(
+        ``,
+        `${apiVersion}/controllers/developer/web-services/page.php?start=${pageParam}`, // loadmore or pagination
+        false,
+        {},
+        "post"
+      ),
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page < lastPage.total) {
+        return lastPage.page + lastPage.count;
+      }
+      return;
+    },
+  });
+
+  React.useEffect(() => {
+    if (InView) {
+      fetchNextPage();
+      setPage((prev) => prev + 1);
+    }
+  }, [InView]);
 
   const handleToggleTable = () => {
     setIsTable(!isTable);
@@ -96,24 +133,33 @@ const Services = () => {
           {isTable == true ? (
             <>
               <ServicesTable
-                isLoading={isLoading}
-                isFetching={isFetching}
-                error={error}
-                dataServices={dataServices}
                 handleAdd={handleAdd}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
+                result={result}
+                error={error}
+                fetchNextPage={fetchNextPage}
+                hasNextPage={hasNextPage}
+                isFetching={isFetching}
+                isFetchingNextPage={isFetchingNextPage}
+                status={status}
+                setPage={setPage}
+                page={page}
+                ref={ref}
               />
             </>
           ) : (
             <ServicesList
-              isLoading={isLoading}
-              isFetching={isFetching}
-              error={error}
-              dataServices={dataServices}
               handleAdd={handleAdd}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
+              result={result}
+              error={error}
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+              isFetching={isFetching}
+              isFetchingNextPage={isFetchingNextPage}
+              status={status}
             />
           )}
         </div>
